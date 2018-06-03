@@ -5,23 +5,31 @@ global.startApp = function(container) {
 
 class DiamondGame  {
 
-  /*Initialize the game default board values */
+  /** Initialize the game default board values */
   constructor(xMax, yMax, numDiamonds) {
     this.xMax = xMax; // Number of cols
     this.yMax = yMax; // Number of rows
     this.numDiamonds = numDiamonds; // Number of diamonds
   }
   
-  /*Check whether the clicked square has a diamond*/
+  /** Check whether the clicked square has a diamond*/
   checkDiamond(elem, diamondPos) {
+
+    /** If the square is already checked, then don't check again*/
+    if(elem.classList.contains("done"))
+    {
+      return;
+    }
+
     let isDiamond = false;
     let x = elem.getAttribute("x");
     let y = elem.getAttribute("y");
-    let dIndex;
-    
-    elem.classList.remove("unknown");
+    let dIndex;  
 
-    console.log(diamondPos);
+    elem.classList.remove("unknown");
+    elem.classList.add("done");
+    
+    /** Check the array which contains the diamond position, if the clicked position contains in it */
     for(const pos of diamondPos) {
       if(x === pos.split(",")[1] && y === pos.split(",")[0]) {
         elem.classList.add("diamond");
@@ -31,7 +39,8 @@ class DiamondGame  {
         break;
       }
     }
-    /*If there is no diamond, show the arrow in the respective direction*/
+
+    /** If there is no diamond, show the arrow in the respective direction*/
     if(!isDiamond) {
       let direction = this.getArrowDirection(x, y, diamondPos);
       if(direction){
@@ -43,14 +52,19 @@ class DiamondGame  {
     }
   }
 
+  /** Generate the nxn squares with n diamonds dynamically */
   generateSquares(diamondPos) {
     let self = this;
     let gameBoard = document.querySelector("#main-board");
-    let row, col, cDiv;
-    for(let i=0; i<this.xMax; i++) {
+    let row, col, cDiv, handler;
+    
+    /** For each row */
+    for(let i=0; i<this.yMax; i++) {
       row = document.createElement("tr");
       gameBoard.append(row);
-      for(let j=0; j<this.yMax; j++){
+
+      /** For each column */
+      for(let j=0; j<this.xMax; j++){
         col = document.createElement("td");
         row.append(col);
         cDiv = document.createElement("div");
@@ -59,13 +73,16 @@ class DiamondGame  {
         cDiv.classList.add("unknown");
         cDiv.setAttribute("y", i);
         cDiv.setAttribute("x", j);
+
+        /** Add click event listener to each square div */
         cDiv.addEventListener("click", function() {
           self.checkDiamond(this, diamondPos);
-      });
+        });
       }
     }
   }
 
+  /** Generate the diamonds array with random positions */
   generateDiamonds() {
     let count = 0;
     let randId;
@@ -80,12 +97,13 @@ class DiamondGame  {
     return diamondPositions;
   }
 
+  /** Get the arrow's direction by calculating the nearest diamond position*/
   getArrowDirection(x, y, diamondPos) {
     let shortestPos = this.getNearestDiamond (x, y, diamondPos);
     if(!shortestPos){
       return null;
     }
-    console.log(shortestPos);
+    
     let xdif = shortestPos.x - x;
     let ydif = shortestPos.y - y;
    
@@ -116,17 +134,21 @@ class DiamondGame  {
     }
   }
 
-  getNearestDiamond(x, y, diamondPos){
-    if(diamondPos.length<=0){
+  /** Get the nearest diamond position by calculating the shortest distance*/
+  getNearestDiamond(x, y, diamondPos) {
+
+    /** If the diamonds array is empty, do not calculate the position*/
+    if(diamondPos.length<=0) {
       return null;
     }
+
     let tempTotal = 0;
     let shorttestTotal = this.xMax + this.yMax;
     let shortestPos = {};
     let dx;
     let dy;
-    for (let z = 0; z < diamondPos.length; z++) 
-		{      
+
+    for (let z = 0; z < diamondPos.length; z++) {      
       dx = Number(diamondPos[z].split(",")[1]);
       dy = Number(diamondPos[z].split(",")[0]);
       tempTotal = Math.abs(dx - x) + Math.abs(dy - y);
@@ -140,8 +162,9 @@ class DiamondGame  {
   }
 }
 
+/** Initialize the game here */
 let startGame = () => {
-    let game = new DiamondGame(8,8,8);
+    let game = new DiamondGame(8, 8, 8);
     let diamondPos = game.generateDiamonds();
     game.generateSquares(diamondPos);
 };
