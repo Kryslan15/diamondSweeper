@@ -1,24 +1,59 @@
-body{
+body {
   background-color: #222222;
 	margin: 0;
 	font-family: 'Cinzel', serif;
 }
 
-#heading, #menu {
+#heading {
 	text-align: center;
-	margin:0;
-	text-transform: uppercase;	
+  margin:0 auto;
+  width: 100%;
+  color: #ffffff;
+  text-transform:  uppercase;
+  background-color: teal;
+  padding: 2%;
+  box-sizing: border-box;
+}
+
+#game-name, #score-section, #message {
+  display: inline-block;
+  font-size: 20px;
+}
+
+#game-name {
+  width: 40%;
+}
+
+#score-section {
+  width: 40%;
+}
+
+#message {
+  widows: 20%;
 }
 
 table{
-  width: 45%;
-  margin: auto;
-  top:5%;
+  width: calc(100vh - 8%);
+  margin: 1% auto;
 }
 table.diamondsweeper-board {
   td {
-    padding: 0;
+    padding: 0;    
+    background-color: #f5e7a9;  
+    border-radius: 15%;
+    transition: background 0.8s;
+	  -webkit-transition: background 0.8s;
+    -moz-transition: background 0.8s;    
   }
+}
+
+@keyframes blinker {  
+  50% { opacity: 0.5;}
+}
+
+.score-blink {
+  animation: blinker 1s linear infinite;
+  font-size: 1.5em;
 }
 
 .cell {
@@ -26,45 +61,69 @@ table.diamondsweeper-board {
   width: 100%;
   padding-bottom: 100%;
   background-size: 100%;
-  background-color: #b7a888;
-  transition: background 0.8s;
-	-webkit-transition: background 0.8s;
-  -moz-transition: background 0.8s;
-  border-radius: 15%;
-  
+  border-radius: 15%;  
 
   &.diamond {
     background-image: url(diamond.png);
-    background-color: #f5d787;
+    background-color: #f5d95f;    
+    transition: background 0.8s;
+    -webkit-transition: background 0.8s;
+    -moz-transition: background 0.8s; 
   }
 
   &.arrow {
     background-image: url(arrow.png);
-    background-color: #ffffff;
-    animation: blinker 1s linear 3;
-    
-    @keyframes blinker {  
-      50% { background-color: #b7a888; }
-    }
+    animation: blinker 1s linear 3;   
 
     &.left {
       -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
+    }
+    &.top-left {
+      -ms-transform: rotate(-135deg); /* IE 9 */
+      -webkit-transform: rotate(-135deg); /* Safari 3-8 */
+      transform: rotate(-135deg);
     }
     &.top {
       -ms-transform: rotate(-90deg); /* IE 9 */
       -webkit-transform: rotate(-90deg); /* Safari 3-8 */
       transform: rotate(-90deg);
     }
-    &.down {
+    &.top-right {
+      -ms-transform: rotate(-45deg); /* IE 9 */
+      -webkit-transform: rotate(-45deg); /* Safari 3-8 */
+      transform: rotate(-45deg);
+    }
+    &.bottom-right {
+      -ms-transform: rotate(45deg); /* IE 9 */
+      -webkit-transform: rotate(45deg); /* Safari 3-8 */
+      transform: rotate(45deg);
+    }
+    &.bottom {
       -ms-transform: rotate(90deg); /* IE 9 */
       -webkit-transform: rotate(90deg); /* Safari 3-8 */
       transform: rotate(90deg);
     }
+    &.bottom-left {
+      -ms-transform: rotate(135deg); /* IE 9 */
+      -webkit-transform: rotate(135deg); /* Safari 3-8 */
+      transform: rotate(135deg);
+    }   
   }
 
   &.unknown {
     background-image: url(question.png);
-    background-color: #e8e3c4;
+    background-color: #fcffee;
+  }
+}
+
+@media (max-width: 576px){
+	#game-name, #score-section, #message{
+    width: 100%;
+  }
+  
+  #score-section{
+    background-color: #ffffff;
+    color: teal;
   }
 }

@@ -10,13 +10,15 @@ class DiamondGame  {
     this.xMax = xMax; // Number of cols
     this.yMax = yMax; // Number of rows
     this.numDiamonds = numDiamonds; // Number of diamonds
+    this.maxScore = xMax * yMax; // The max score of the game
+    this.gameOver = false;
   }
   
   /** Check whether the clicked square has a diamond*/
   checkDiamond(elem, diamondPos) {
 
     /** If the square is already checked, then don't check again*/
-    if(elem.classList.contains("done"))
+    if(elem.classList.contains("done") || this.gameOver)
     {
       return;
     }
@@ -28,7 +30,9 @@ class DiamondGame  {
 
     elem.classList.remove("unknown");
     elem.classList.add("done");
-    
+    this.maxScore -= 1;
+    document.querySelector("#score").innerHTML = this.maxScore;
+
     /** Check the array which contains the diamond position, if the clicked position contains in it */
     for(const pos of diamondPos) {
       if(x === pos.split(",")[1] && y === pos.split(",")[0]) {
@@ -39,7 +43,12 @@ class DiamondGame  {
         break;
       }
     }
-
+    if(diamondPos.length === 0) {
+      document.querySelector("#message").innerHTML = "GAME OVER!"
+      document.querySelector("#score-section").classList.add("score-blink");
+      this.gameOver = true;
+      return;
+    }
     /** If there is no diamond, show the arrow in the respective direction*/
     if(!isDiamond) {
       let direction = this.getArrowDirection(x, y, diamondPos);
@@ -165,6 +174,7 @@ class DiamondGame  {
 /** Initialize the game here */
 let startGame = () => {
     let game = new DiamondGame(8, 8, 8);
+    document.querySelector("#score").innerHTML = game.maxScore;
     let diamondPos = game.generateDiamonds();
     game.generateSquares(diamondPos);
 };
