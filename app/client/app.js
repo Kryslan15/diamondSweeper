@@ -10,15 +10,25 @@ class DiamondGame  {
     this.numDiamonds = numDiamonds;
   }
   
-  checkDiamond(elem) {
+  checkDiamond(elem, diamondPos) {
     elem.classList.remove("unknown");
+    console.log(diamondPos)
+    for(const pos of diamondPos) {
+      console.log("id", elem.id);
+      console.log("pos", `${pos.x}-${pos.y}`);
+      if(elem.id === `${pos.x}-${pos.y}`) {
+        elem.classList.add("diamond");
+        break;
+      }
+      
+    }
   }
 
-  generateSquares() {
+  generateSquares(diamondPos) {
     let self = this;
     let gameBoard = document.querySelector("#main-board");
     let row, col, cDiv;
-    for(let i=0; i<this.xMax; i++){
+    for(let i=0; i<this.xMax; i++) {
       row = document.createElement("tr");
       gameBoard.append(row);
       for(let j=0; j<this.yMax; j++){
@@ -28,24 +38,29 @@ class DiamondGame  {
         col.append(cDiv);
         cDiv.classList.add("cell");
         cDiv.classList.add("unknown");
+        cDiv.id = `${i}-${j}`;
         cDiv.addEventListener("click", function() {
-          self.checkDiamond(this);
+          self.checkDiamond(this, diamondPos);
       });
       }
     }
   }
-}
 
-
-class SquareObj { 
-  constructor(x, y, type) {
-    this.x = x;
-    this.y = y;
-    this.type = type;
+  generateDiamonds() {
+    let randX;
+    let randY;
+    let diamondPositions = [];
+    for (let i = 0; i < this.numDiamonds; i++) {
+			randX = Math.floor(Math.random() * this.xMax);
+			randY = Math.floor(Math.random() * this.yMax);
+      diamondPositions.push({x: randX, y: randY});
+    }
+    return diamondPositions;
   }
 }
 
 let startGame = () => {
     let game = new DiamondGame(8,8,8);
-    game.generateSquares();
+    let diamondPos = game.generateDiamonds();
+    game.generateSquares(diamondPos);
 };
