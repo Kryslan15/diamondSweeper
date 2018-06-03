@@ -4,32 +4,42 @@ global.startApp = function(container) {
 }
 
 class DiamondGame  {
+
+  /*Initialize the game default board values */
   constructor(xMax, yMax, numDiamonds) {
-    this.xMax = xMax;
-    this.yMax = yMax;
-    this.numDiamonds = numDiamonds;
+    this.xMax = xMax; // Number of cols
+    this.yMax = yMax; // Number of rows
+    this.numDiamonds = numDiamonds; // Number of diamonds
   }
   
   /*Check whether the clicked square has a diamond*/
   checkDiamond(elem, diamondPos) {
-    elem.classList.remove("unknown");
     let isDiamond = false;
     let x = elem.getAttribute("x");
     let y = elem.getAttribute("y");
+    let dIndex;
+    
+    elem.classList.remove("unknown");
+
+    console.log(diamondPos);
     for(const pos of diamondPos) {
-      if(x === pos.split(",")[0] && y === pos.split(",")[1]) {
+      if(x === pos.split(",")[1] && y === pos.split(",")[0]) {
         elem.classList.add("diamond");
+        dIndex = diamondPos.indexOf(pos);
+        diamondPos.splice(dIndex, 1);
         isDiamond = true;
         break;
       }
     }
     /*If there is no diamond, show the arrow in the respective direction*/
     if(!isDiamond) {
-      let direction = this.getArrowDirection(x, y);
-      elem.classList.add("arrow", `${direction}`);
-      setTimeout(function(){
-        elem.classList.remove("arrow", `${direction}`);
-      }, 2000);      
+      let direction = this.getArrowDirection(x, y, diamondPos);
+      if(direction){
+        elem.classList.add("arrow", `${direction}`);
+        setTimeout(function(){
+          elem.classList.remove("arrow", `${direction}`);
+        }, 2000);
+      }  
     }
   }
 
@@ -47,8 +57,8 @@ class DiamondGame  {
         col.append(cDiv);
         cDiv.classList.add("cell");
         cDiv.classList.add("unknown");
-        cDiv.setAttribute("x", i);
-        cDiv.setAttribute("y", j);
+        cDiv.setAttribute("y", i);
+        cDiv.setAttribute("x", j);
         cDiv.addEventListener("click", function() {
           self.checkDiamond(this, diamondPos);
       });
@@ -70,16 +80,64 @@ class DiamondGame  {
     return diamondPositions;
   }
 
-  getArrowDirection() {
-   // this.getNearestDiamond (i, j);
-    return "left";
+  getArrowDirection(x, y, diamondPos) {
+    let shortestPos = this.getNearestDiamond (x, y, diamondPos);
+    if(!shortestPos){
+      return null;
+    }
+    console.log(shortestPos);
+    let xdif = shortestPos.x - x;
+    let ydif = shortestPos.y - y;
+   
+    
+    if (xdif< 0 && ydif <0){
+       return "top-left";
+    }
+    if (xdif === 0 && ydif <0) {
+      return "top";
+    }
+    if (xdif > 0 && ydif <0) {
+      return "top-right";
+    }
+    if (xdif < 0 && ydif === 0) {
+      return "left";
+    }
+    if (xdif > 0 && ydif === 0) {
+      return "right";
+    }
+    if (xdif < 0 && ydif >0) {
+      return "bottom-left";
+    }
+    if (xdif == 0 && ydif >0) {
+      return "bottom";
+    }
+    if (xdif > 0 && ydif >0) {
+      return "bottom-right";
+    }
   }
 
-  getNearestDiamond(){
-    let tempX = 0;
-		let tempY = 0;
+  getNearestDiamond(x, y, diamondPos){
+    if(diamondPos.length<=0){
+      return null;
+    }
+    let tempTotal = 0;
+    let shorttestTotal = this.xMax + this.yMax;
+    let shortestPos = {};
+    let dx;
+    let dy;
+    for (let z = 0; z < diamondPos.length; z++) 
+		{      
+      dx = Number(diamondPos[z].split(",")[1]);
+      dy = Number(diamondPos[z].split(",")[0]);
+      tempTotal = Math.abs(dx - x) + Math.abs(dy - y);
+			if (tempTotal < shorttestTotal) {
+        shorttestTotal = tempTotal;
+        shortestPos.x = dx;
+        shortestPos.y = dy;        
+			}
+    }
+    return shortestPos;
   }
-
 }
 
 let startGame = () => {
