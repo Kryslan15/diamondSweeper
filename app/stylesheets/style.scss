@@ -11,8 +11,9 @@ body {
   color: #ffffff;
   text-transform:  uppercase;
   background-color: teal;
-  padding: 2%;
+  padding: 1%;
   box-sizing: border-box;
+  height: 90px;
 }
 
 #game-name, #score-section, #message {
@@ -22,14 +23,11 @@ body {
 
 #game-name {
   width: 40%;
+  font-weight: bold;
 }
 
 #score-section {
   width: 40%;
-}
-
-#message {
-  widows: 20%;
 }
 
 table{
@@ -116,6 +114,7 @@ table.diamondsweeper-board {
     background-color: #fcffee;
   }
 }
+
 
 @media (max-width: 576px){
 	#game-name, #score-section, #message{

@@ -174,7 +174,7 @@ class DiamondGame  {
 /** Initialize the game here */
 let startGame = () => {
     let game = new DiamondGame(8, 8, 8);
-    document.querySelector("#score").innerHTML = game.maxScore;
+    document.querySelector("#score").innerHTML = game.maxScore;   
     let diamondPos = game.generateDiamonds();
     game.generateSquares(diamondPos);
 };
