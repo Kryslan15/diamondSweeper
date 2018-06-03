@@ -10,17 +10,26 @@ class DiamondGame  {
     this.numDiamonds = numDiamonds;
   }
   
+  /*Check whether the clicked square has a diamond*/
   checkDiamond(elem, diamondPos) {
     elem.classList.remove("unknown");
-    console.log(diamondPos)
+    let isDiamond = false;
+    let x = elem.getAttribute("x");
+    let y = elem.getAttribute("y");
     for(const pos of diamondPos) {
-      console.log("id", elem.id);
-      console.log("pos", `${pos.x}-${pos.y}`);
-      if(elem.id === `${pos.x}-${pos.y}`) {
+      if(x === pos.split(",")[0] && y === pos.split(",")[1]) {
         elem.classList.add("diamond");
+        isDiamond = true;
         break;
       }
-      
+    }
+    /*If there is no diamond, show the arrow in the respective direction*/
+    if(!isDiamond) {
+      let direction = this.getArrowDirection(x, y);
+      elem.classList.add("arrow", `${direction}`);
+      setTimeout(function(){
+        elem.classList.remove("arrow", `${direction}`);
+      }, 2000);      
     }
   }
 
@@ -38,7 +47,8 @@ class DiamondGame  {
         col.append(cDiv);
         cDiv.classList.add("cell");
         cDiv.classList.add("unknown");
-        cDiv.id = `${i}-${j}`;
+        cDiv.setAttribute("x", i);
+        cDiv.setAttribute("y", j);
         cDiv.addEventListener("click", function() {
           self.checkDiamond(this, diamondPos);
       });
@@ -47,16 +57,29 @@ class DiamondGame  {
   }
 
   generateDiamonds() {
-    let randX;
-    let randY;
+    let count = 0;
+    let randId;
     let diamondPositions = [];
-    for (let i = 0; i < this.numDiamonds; i++) {
-			randX = Math.floor(Math.random() * this.xMax);
-			randY = Math.floor(Math.random() * this.yMax);
-      diamondPositions.push({x: randX, y: randY});
+    while(this.numDiamonds !== diamondPositions.length) {
+      randId = `${Math.floor(Math.random() * this.xMax)},${Math.floor(Math.random() * this.yMax)}`;
+			if (diamondPositions.indexOf(randId) === -1) {
+        diamondPositions.push(randId);
+        count+= 1;
+      }
     }
     return diamondPositions;
   }
+
+  getArrowDirection() {
+   // this.getNearestDiamond (i, j);
+    return "left";
+  }
+
+  getNearestDiamond(){
+    let tempX = 0;
+		let tempY = 0;
+  }
+
 }
 
 let startGame = () => {
